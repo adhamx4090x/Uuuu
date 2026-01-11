@@ -1,0 +1,33 @@
+[[package]]
+name = "cxa-kdf"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+cxa-mem = { path = "../../mem" }
+cxa-error = { path = "../../error" }
+
+# Argon2 - Modern password hashing
+argon2 = "0.5"
+
+# scrypt - Memory-hard KDF
+scrypt = "0.11"
+
+# PBKDF2 - Legacy but still useful
+pbkdf2 = "0.11"
+
+# SHA-2 for PBKDF2
+sha2 = "0.10"
+
+# HMAC for PBKDF2
+hmac = "1"
+
+# Randomness
+rand = "0.8"
+
+# Encoding
+base64ct = "6"
+hex = "0.4"
+
+[lib]
+crate-type = ["cdylib", "staticlib"]

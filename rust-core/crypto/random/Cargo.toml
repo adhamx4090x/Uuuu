@@ -1,0 +1,26 @@
+[package]
+name = "cxa-random"
+version = "1.0.0"
+edition = "2021"
+description = "Cryptographically secure random number generation for CXA"
+authors = ["XvoidcrewX <voidcrew@cock.li>"]
+license = "MIT"
+repository = "https://github.com/XvoidcrewX/CXA"
+documentation = "https://github.com/XvoidcrewX/CXA/docs"
+readme = "../../README.md"
+keywords = ["cryptography", "random", "csprng", "entropy"]
+categories = ["cryptography", "security"]
+
+[features]
+default = ["std"]
+std = []
+
+[dependencies]
+zeroize = "1.7"
+
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "random_benchmark"
+harness = false

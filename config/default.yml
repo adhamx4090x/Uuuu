@@ -1,0 +1,274 @@
+# CXA Cryptographic System - Default Configuration
+# Version: 1.0.0
+# Last Updated: 2024-01-01
+
+# Application Settings
+app:
+  name: "CXA Cryptographic System"
+  version: "1.0.0"
+  build_date: "2024-01-01"
+  environment: "production"  # development, staging, production
+
+# Security Settings
+security:
+  # Minimum password requirements
+  min_password_length: 12
+  require_uppercase: true
+  require_lowercase: true
+  require_numbers: true
+  require_special_chars: true
+  max_password_age_days: 90
+
+  # Key management
+  max_key_age_days: 365
+  auto_key_rotation: true
+  key_rotation_interval_days: 30
+  allow_key_export: false
+
+  # Session management
+  session_timeout_minutes: 15
+  max_concurrent_sessions: 3
+  require_mfa: false
+
+  # Rate limiting
+  rate_limit:
+    enabled: true
+    requests_per_minute: 60
+    burst_size: 10
+
+  # Audit logging
+  audit:
+    enabled: true
+    log_file: "security_audit.log"
+    max_log_size_mb: 100
+    retention_days: 90
+    redact_sensitive: true
+
+# Cryptographic Settings
+crypto:
+  # Default algorithms
+  default_symmetric_algorithm: "aes-gcm-256"
+  default_asymmetric_algorithm: "rsa-4096"
+  default_hash_algorithm: "sha-256"
+
+  # AES settings
+  aes:
+    supported_modes:
+      - "gcm"
+      - "cbc"
+    key_sizes:
+      - 128
+      - 192
+      - 256
+    default_key_size: 256
+    gcm_tag_size: 16
+    gcm_nonce_size: 12
+
+  # ChaCha20 settings
+  chacha20:
+    nonce_size: 12
+    poly1305_tag_size: 16
+
+  # RSA settings
+  rsa:
+    supported_key_sizes:
+      - 2048
+      - 3072
+      - 4096
+    default_key_size: 4096
+    padding_mode: "oaep"
+    oaep_hash: "sha-256"
+
+  # Key derivation
+  kdf:
+    default_algorithm: "pbkdf2"
+    pbkdf2:
+      default_iterations: 600000
+      min_iterations: 100000
+      hash_algorithm: "sha-256"
+    argon2:
+      memory_cost_kb: 65536  # 64 MB
+      time_cost: 3
+      parallelism: 4
+
+  # Hash algorithms
+  hash:
+    supported_algorithms:
+      - "sha-256"
+      - "sha-512"
+      - "blake3"
+    default_algorithm: "sha-256"
+
+# Steganography Settings
+steganography:
+  # Image steganography
+  image:
+    supported_formats:
+      - "png"
+      - "bmp"
+      - "gif"
+    max_capacity_percent: 50
+    default_method: "lsb"
+    lsb:
+      encoding_order: "rgb"
+    dct:
+      quality: 75
+      block_size: 8
+
+  # Text steganography
+  text:
+    supported_methods:
+      - "whitespace"
+      - "unicode"
+      - "zero-width"
+    default_method: "zero-width"
+
+# Memory Security Settings
+memory:
+  # Secure memory management
+  secure_memory:
+    enabled: true
+    lock_pages: true
+    prevent_swap: true
+
+  # Memory wiping
+  wipe:
+    default_passes: 3
+    methods:
+      - "zero"
+      - "random"
+      - "complement"
+
+  # Buffer sizes
+  buffer:
+    max_encryption_size_mb: 100
+    chunk_size_kb: 1024
+
+# UI Settings
+ui:
+  theme: "dark"
+  language: "en"
+  font_size: 12
+  animations: true
+  auto_save: true
+
+  # Dashboard
+  dashboard:
+    show_system_stats: true
+    show_security_score: true
+    refresh_interval_seconds: 5
+
+  # Key display
+  key_display:
+    show_first_last_bytes: true
+    truncate_length: 8
+    copy_to_clipboard: true
+
+# Backup Settings
+backup:
+  enabled: true
+  location: "./backups"
+  encryption: true
+  compression: true
+  compression_level: 6
+  retention_days: 30
+  auto_backup_interval_hours: 24
+  max_backup_size_mb: 1000
+
+# Network Settings
+network:
+  # API server
+  api:
+    enabled: false
+    host: "0.0.0.0"
+    port: 8443
+    tls:
+      enabled: true
+      min_version: "1.2"
+      cert_file: "server.crt"
+      key_file: "server.key"
+
+  # Proxy settings
+  proxy:
+    enabled: false
+    host: ""
+    port: 0
+    authentication: false
+
+# Logging Settings
+logging:
+  level: "info"  # debug, info, warning, error
+  format: "json"  # json, text
+  file:
+    enabled: true
+    path: "cxa.log"
+    max_size_mb: 50
+    max_files: 5
+  console:
+    enabled: true
+    colors: true
+
+# Performance Settings
+performance:
+  # Threading
+  max_threads: 4
+  use_hardware_acceleration: true
+
+  # Caching
+  cache:
+    enabled: true
+    max_entries: 1000
+    ttl_seconds: 300
+
+  # Batch operations
+  batch:
+    max_operations: 1000
+    parallel_processing: true
+
+# Development Settings (overridden in production)
+development:
+  debug_mode: false
+  show_detailed_errors: true
+  enable_profiling: false
+  mock_hardware: false
+
+# Plugin Settings
+plugins:
+  enabled: false
+  directory: "./plugins"
+  whitelist: []
+  auto_load: false
+
+# Hardware Integration
+hardware:
+  # HSM support
+  hsm:
+    enabled: false
+    provider: "pkcs11"
+    module_path: ""
+    slot_id: 0
+
+  # TPM support
+  tpm:
+    enabled: false
+    path: "/dev/tpm0"
+    owner_password: ""
+
+# Compliance Settings
+compliance:
+  # FIPS 140-2 compliance
+  fips:
+    enabled: false
+    mode: "fips_140_2"
+
+  # GDPR compliance
+  gdpr:
+    data_retention_days: 365
+    right_to_deletion: true
+    data_export: true
+
+  # SOC 2 compliance
+  soc2:
+    access_control: true
+    change_management: true
+    risk_management: true

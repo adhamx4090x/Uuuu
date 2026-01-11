@@ -1,0 +1,56 @@
+FROM golang:1.21-alpine AS builder
+
+WORKDIR /app
+
+# Install dependencies
+RUN apk add --no-cache git ca-certificates tzdata
+
+# Copy go.mod and go.sum first for better caching
+COPY go.mod go.sum ./
+RUN go mod download
+RUN go mod verify
+
+# Copy source code
+COPY . .
+
+# Build the API server
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /app/cxa-api-server ./api-server
+
+# Build the event monitor
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /app/cxa-event-monitor ./event-monitor
+
+# Production image
+FROM alpine:3.19 AS production
+
+# Install runtime dependencies
+RUN apk add --no-cache ca-certificates tzdata openssl
+
+# Create non-root user
+RUN addgroup -g 1000 cxa && \
+    adduser -u 1000 -G cxa -s /bin/sh -D cxa
+
+# Create directories
+RUN mkdir -p /keys /backups /var/log/cxa /app
+
+# Copy binaries
+COPY --from=builder /app/cxa-api-server /app/
+COPY --from=builder /app/cxa-event-monitor /app/
+
+# Copy configuration
+COPY config/default.yml /app/config.yml
+
+# Set permissions
+RUN chown -R cxa:cxa /keys /backups /var/log/cxa /app
+
+# Switch to non-root user
+USER cxa
+
+# Expose ports
+EXPOSE 8443
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8443/health || exit 1
+
+# Default command
+CMD ["/app/cxa-api-server", "--config", "/app/config.yml"]

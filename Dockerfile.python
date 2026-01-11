@@ -1,0 +1,59 @@
+FROM python:3.11-slim AS builder
+
+WORKDIR /app
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    pkg-config \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy Python requirements
+COPY requirements/base.txt requirements/base.txt
+RUN pip install --no-cache-dir --prefix=/install -r requirements/base.txt
+
+# Copy source code
+COPY python-core/ ./python-core/
+COPY rust-core/ ./rust-core/
+
+# Build Rust modules
+WORKDIR /app/rust-core
+RUN cargo build --release
+
+# Build Python package
+WORKDIR /app/python-core
+RUN pip install --no-cache-dir --prefix=/install .
+
+# Production image
+FROM python:3.11-slim AS production
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libssl3 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN groupadd -g 1000 cxa && \
+    adduser -u 1000 -G cxa -s /bin/sh -D cxa
+
+# Copy installed packages
+COPY --from=builder /install /usr/local
+
+# Create directories
+RUN mkdir -p /app /keys /var/log/cxa
+
+# Copy application
+COPY --from=builder /app/python-core/cxa /app/cxa
+COPY --from=builder /app/rust-core/target/release/*.so /app/
+
+# Set permissions
+RUN chown -R cxa:cxa /app /keys /var/log/cxa
+
+# Switch to non-root user
+USER cxa
+
+WORKDIR /app
+
+# Default command
+CMD ["python", "-m", "cxa"]

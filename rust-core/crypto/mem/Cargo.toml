@@ -1,0 +1,30 @@
+[package]
+name = "cxa-mem"
+version = "1.0.0"
+edition = "2021"
+description = "Secure memory management operations for CXA cryptographic system"
+authors = ["XvoidcrewX <voidcrew@cock.li>"]
+license = "MIT"
+repository = "https://github.com/XvoidcrewX/CXA"
+documentation = "https://github.com/XvoidcrewX/CXA/docs"
+readme = "../../README.md"
+keywords = ["security", "memory", "secure-delete", "cryptography"]
+categories = ["cryptography", "security"]
+
+[features]
+default = ["std"]
+std = []
+testing = []
+
+[dependencies]
+zeroize = { version = "1.7", features = ["derive"] }
+libc = "0.2"
+winapi = { version = "0.3", features = ["memoryapi", "errhandlingapi", "handleapi"] }
+
+[dev-dependencies]
+criterion = "0.5"
+paste = "1.0"
+
+[[bench]]
+name = "mem_benchmark"
+harness = false

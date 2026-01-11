@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  cxa-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "8443:8443"
+    volumes:
+      - cxa-keys:/keys
+      - cxa-backups:/backups
+      - cxa-logs:/var/log/cxa
+    environment:
+      - CXA_KEY_DIR=/keys
+      - CXA_BACKUP_DIR=/backups
+      - CXA_LOG_LEVEL=info
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+
+  cxa-monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile.monitor
+    volumes:
+      - cxa-events:/events
+      - cxa-logs:/var/log/cxa
+    environment:
+      - CXA_EVENT_DIR=/events
+      - CXA_LOG_LEVEL=info
+    restart: unless-stopped
+    depends_on:
+      - cxa-api
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+
+volumes:
+  cxa-keys:
+    driver: local
+  cxa-backups:
+    driver: local
+  cxa-events:
+    driver: local
+  cxa-logs:
+    driver: local
+
+networks:
+  default:
+    name: cxa-network
+    driver: bridge

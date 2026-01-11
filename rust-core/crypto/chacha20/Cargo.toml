@@ -1,0 +1,30 @@
+[package]
+name = "cxa-chacha20"
+version = "1.0.0"
+edition = "2021"
+description = "ChaCha20-Poly1305 implementation for CXA cryptographic system"
+authors = ["XvoidcrewX <voidcrew@cock.li>"]
+license = "MIT"
+repository = "https://github.com/XvoidcrewX/CXA"
+documentation = "https://github.com/XvoidcrewX/CXA/docs"
+readme = "../../README.md"
+keywords = ["cryptography", "chacha20", "poly1305", "encryption"]
+categories = ["cryptography", "security"]
+
+[features]
+default = ["std"]
+std = []
+asm = []
+
+[dependencies]
+zeroize = "1.7"
+getrandom = { version = "0.2", features = ["js"] }
+subtle = "2.5"
+
+[dev-dependencies]
+criterion = "0.5"
+hex-literal = "0.4"
+
+[[bench]]
+name = "chacha20_benchmark"
+harness = false

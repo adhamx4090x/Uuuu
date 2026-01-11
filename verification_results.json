@@ -1,0 +1,69 @@
+{
+  "timestamp": "2026-01-01T05:08:34.370915",
+  "project_root": "/workspace/CXA",
+  "files_checked": 83,
+  "files_valid": 83,
+  "files_missing": 0,
+  "files_errors": 0,
+  "components": {
+    "root": {
+      "total": 11,
+      "valid": 11,
+      "missing": 0
+    },
+    "python": {
+      "subdirectories": [
+        "python-core",
+        "python-cli",
+        "python-gui"
+      ],
+      "total_files": 33,
+      "valid_files": 33,
+      "missing_files": 0
+    },
+    "rust": {
+      "modules": [
+        "aes",
+        "chacha20",
+        "ed25519",
+        "hash",
+        "kdf",
+        "mac",
+        "mem",
+        "random",
+        "rsa"
+      ],
+      "total_files": 18,
+      "valid_files": 18,
+      "missing_files": 0
+    },
+    "go": {
+      "services": [
+        "api-server",
+        "event-monitor",
+        "event-processor",
+        "monitor"
+      ],
+      "total_files": 4,
+      "valid_files": 4,
+      "missing_files": 0
+    },
+    "docs": {
+      "total": 4,
+      "valid": 4,
+      "missing": 0
+    },
+    "tests": {
+      "total": 12,
+      "valid": 12,
+      "missing": 0
+    },
+    "config": {
+      "total": 1,
+      "valid": 1,
+      "missing": 0
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

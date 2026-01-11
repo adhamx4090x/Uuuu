@@ -1,0 +1,22 @@
+[[package]]
+name = "cxa-ed25519"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+cxa-mem = { path = "../../mem" }
+cxa-error = { path = "../../error" }
+
+# Ed25519 Digital Signatures
+ed25519-dalek = "2"
+curve25519-dalek = "4"
+
+# Key encoding
+base64ct = "6"
+hex = "0.4"
+
+# Randomness
+rand = "0.8"
+
+[lib]
+crate-type = ["cdylib", "staticlib"]

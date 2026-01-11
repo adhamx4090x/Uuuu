@@ -1,0 +1,27 @@
+[workspace]
+members = [
+    "crypto/aes",
+    "crypto/chacha20",
+    "crypto/rsa",
+    "crypto/ed25519",
+    "crypto/hash",
+    "crypto/mac",
+    "crypto/random",
+    "crypto/mem",
+    "crypto/kdf",
+    "crypto/curve25519",
+]
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.dev]
+debug = true
+
+[workspace.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--deny", "warnings"]

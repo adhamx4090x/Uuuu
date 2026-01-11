@@ -1,0 +1,41 @@
+# CXA Cryptographic System - Base Requirements
+# Version: 1.0.0
+
+# Core cryptographic library
+cryptography>=41.0.0
+
+# Numerical operations for steganography
+numpy>=1.21.0
+
+# Image processing for steganography
+Pillow>=9.0.0
+
+# Wavelet transforms for advanced steganography
+PyWavelets>=1.1.0
+
+# System information for monitoring
+psutil>=5.8.0
+
+# Secure keychain integration
+keyring>=23.0.0
+
+# Compression for efficient storage
+zstandard>=0.15.0
+
+# Error correction codes for steganography
+reedsolo>=1.7.0
+
+# Secret sharing for distributed key management
+secretsharing>=0.2.7
+
+# C foreign function interface
+cffi>=1.15.0
+
+# Secure random number generation (if not using system)
+secretsharing>=0.2.7
+
+# Configuration management
+PyYAML>=6.0
+
+# Logging and monitoring
+structlog>=23.0.0

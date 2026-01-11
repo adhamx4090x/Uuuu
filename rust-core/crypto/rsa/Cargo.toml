@@ -1,0 +1,24 @@
+[[package]]
+name = "cxa-rsa"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+cxa-mem = { path = "../../mem" }
+cxa-error = { path = "../../error" }
+
+# RSA Cryptography
+rsa = "0.9"
+rand = "0.8"
+num-bigint = "0.4"
+num-traits = "0.2"
+
+# OAEPr padding
+oaep = "0.4"
+
+# Encoding
+base64ct = "6"
+hex = "0.4"
+
+[lib]
+crate-type = ["cdylib", "staticlib"]

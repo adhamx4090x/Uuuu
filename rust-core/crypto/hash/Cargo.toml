@@ -1,0 +1,28 @@
+[package]
+name = "cxa-hash"
+version = "1.0.0"
+edition = "2021"
+description = "Cryptographic hash functions for CXA - SHA256, SHA512, BLAKE3"
+authors = ["XvoidcrewX <voidcrew@cock.li>"]
+license = "MIT"
+repository = "https://github.com/XvoidcrewX/CXA"
+documentation = "https://github.com/XvoidcrewX/CXA/docs"
+readme = "../../README.md"
+keywords = ["cryptography", "hash", "sha256", "sha512", "blake3"]
+categories = ["cryptography", "security"]
+
+[features]
+default = ["std"]
+std = []
+blake3 = ["dep:blake3"]
+
+[dependencies]
+zeroize = "1.7"
+getrandom = { version = "0.2", features = ["js"] }
+
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "hash_benchmark"
+harness = false
