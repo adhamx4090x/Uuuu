@@ -1,0 +1,96 @@
+name: Unzip Files and Flatten Repo
+
+on:
+  push:
+    paths:
+      - '**.zip'
+
+jobs:
+  unzip-and-flatten:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract ZIP files and flatten structure
+        run: |
+          set -euo pipefail
+          
+          EXCLUDE_DIRS=".git .github"
+          
+          while IFS= read -r -d '' zip_file; do
+            echo "Processing: $zip_file"
+            
+            TEMP_DIR=$(mktemp -d)
+            trap "rm -rf '$TEMP_DIR'" EXIT
+            
+            unzip -o -q "$zip_file" -d "$TEMP_DIR"
+            
+            cd "$TEMP_DIR"
+            
+            if [ "$(find . -maxdepth 1 -type f | wc -l)" -gt 0 ]; then
+              cd "$OLDPWD"
+              cp -r "$TEMP_DIR"/* .
+            else
+              FIRST_LEVEL_DIRS=$(find . -maxdepth 1 -type d | tail -n +2)
+              
+              if [ "$(echo "$FIRST_LEVEL_DIRS" | wc -l)" -eq 1 ]; then
+                TOP_DIR=$(find . -maxdepth 1 -type d | tail -n +2 | head -1)
+                cd "$OLDPWD"
+                cp -r "$TEMP_DIR/$TOP_DIR"/* .
+              else
+                cd "$OLDPWD"
+                cp -r "$TEMP_DIR"/*/ .
+              fi
+            fi
+            
+            while IFS= read -r -d '' item; do
+              base=$(basename "$item")
+              skip=false
+              for ex in $EXCLUDE_DIRS; do
+                if [ "$base" = "$ex" ]; then
+                  skip=true
+                  break
+                fi
+              done
+              if [ "$skip" = false ]; then
+                rm -rf "$base" 2>/dev/null || true
+                mv "$item" .
+              fi
+            done < <(find . -maxdepth 1 -mindepth 1 ! -name ".git" ! -name ".github" ! -name ".gitignore" -print0)
+            
+            rm -f "$zip_file"
+            echo "Completed: $zip_file"
+            
+          done < <(find . -maxdepth 1 -type f -name "*.zip" -print0)
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Check for changes
+        id: git-status
+        run: |
+          if git status --porcelain | grep -q .; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push changes
+        if: steps.git-status.outputs.has_changes == 'true'
+        run: |
+          git add -A
+          git commit -m "Extract and flatten ZIP contents - $(date '+%Y-%m-%d %H:%M:%S')"
+          git push
+
+      - name: No changes to commit
+        if: steps.git-status.outputs.has_changes == 'false'
+        run: |
+          echo "No files to process"
+
